@@ -135,8 +135,8 @@ its paremeters. If there is no change it is not run.
 # Usefull links
 Here a collection of usefull links that go into more detail. I recomend the KMP
 and KMP compose resources the most.
-[KMP shared UI and data logic guide](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-multiplatform-create-first-app.html)
-[KMP Compose guide](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-multiplatform-and-jetpack-compose.html)
-[Getting started with kotlin](https://kotlinlang.org/docs/getting-started.html)
-[Gradle guide](https://docs.gradle.org/current/userguide/userguide.html)
+- [KMP shared UI and data logic guide](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-multiplatform-create-first-app.html)
+- [KMP Compose guide](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-multiplatform-and-jetpack-compose.html)
+- [Getting started with kotlin](https://kotlinlang.org/docs/getting-started.html)
+- [Gradle guide](https://docs.gradle.org/current/userguide/userguide.html)
 
