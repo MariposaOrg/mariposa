@@ -137,7 +137,7 @@ Once users have accepted the group chat they periodically check in with the init
 		- Pending, cancelled or accepted 
 - IV
 
-After viewing an accepted response the users can begin using the group chat.
+After viewing an accepted status the users can begin using the group chat.
 
 Pinging users can allow you check if a contact is able to receive messages. A ping has the following format.
 - encrypted section 
@@ -159,7 +159,7 @@ To add a user to a group, a group member must first send a group addition reques
 	- contact id
 	- group addition request
 		- group id
-		- group additions id
+		- group addition id
 		- list of participants onion addresses and nick names
 		- list of perspective members onion addresses and nick names
 - IV
@@ -172,9 +172,9 @@ Users can choose to accept or decline the request with a group addition response
 		- group id
 		- addition id
 - IV
-Users can only accept if they have the contacts for all listed onion addresses
+Users can only accept if they have the contacts for all listed onion addresses. If they do not have the required contacts the can send a introduction petition message to the initiator.
 
-After sending an accept response users will continuously monitor the addition by requesting statuses for the addition by sending a group addition status request.
+After sending an accept response users will continuously monitor the addition by sending a group addition status requests.
 - encrypted section
 	- contact id
 	- group addition request
@@ -188,7 +188,8 @@ The initiator will respond with a group addition status response
 	- group addition response
 		- cancelled, pending, or accepted
 
-if any user declines the request the process is canceled and the initiator will respond to status requests until all participating users have seen a canceled response.
+if any user declines the request the process is canceled and the initiator will respond to status requests until all participating users have seen a canceled status.
 
-If accepted the initiator will display the accepted message until all participating users have seen the response.
+If accepted the initiator will display the accepted status until all participating users have seen it.
 
+Once a user has viewed an accepted message they will add the users to their group chat participant list.
