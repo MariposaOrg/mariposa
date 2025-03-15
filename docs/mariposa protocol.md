@@ -17,7 +17,7 @@ First user one creates a temporary contact and shares the following information 
 - an encryption key - a 256 encryption key
 This information can be shared using a QR code or passed over Bluetooth.
 
-Using this, user two creates a contact, and sends a "initial contact" message to user two. The message is encrypted using the contact key and a initiation vector to prevent pattern analysis attacks. The contact message takes the following structure
+Using this, user two creates a contact, and sends a "initial contact" message to user ones onion address. The message is encrypted using the contact key and a initiation vector to prevent pattern analysis attacks. The contact message takes the following structure
 - encrypted section
 	- contact id
 	- initial contact message type
