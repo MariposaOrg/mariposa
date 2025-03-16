@@ -1,3 +1,5 @@
+# Intro
+
 Mariposa is a peer to peer encrypted messaging protocol built on HTTPS between TOR hidden services. Communication takes place over three main activities: contact, introduction, and messaging. Contact is the process in which users are able to create contacts for other users. It is designed to take place in person. Introduction allows users to act as intermediaries between other users. Allowing them to create contacts for users without meeting in person. Finally, messaging is the process in which users communicate. Users can send messages to single users or group chats.
 
 Encryption takes place using AES-GCM mode with 256 bit keys. AES is used with GCM mode to prevent bit flipping attacks.
@@ -10,12 +12,14 @@ A Contact stores all the information needed to message a users. It has the follo
 - 256 bit encryption key for messages
 - contact nickname, plain text
 
+### Contact
 Contact is meant to take place in person. The method is a follows.
 First user one creates a temporary contact and shares the following information with the user two.
+This information can be shared using a QR code or passed over Bluetooth.
 - contact id - a unique 256 bit random hash
 - onion address - the link the tor address for user one
 - an encryption key - a 256 encryption key
-This information can be shared using a QR code or passed over Bluetooth.
+
 
 Using this, user two creates a contact, and sends a "initial contact" message to user ones onion address. The message is encrypted using the contact key and a initiation vector to prevent pattern analysis attacks. The contact message takes the following structure
 - encrypted section
@@ -23,8 +27,10 @@ Using this, user two creates a contact, and sends a "initial contact" message to
 	- initial contact message type
 		- senders onion address
 - IV
+
 Messages are decrypted by iterating contacts; Using each key until a valid message is found. Once the message is decrypted user one validates that the contact id from the message is the same one used to decrypt the message. If so that contacts onion address is updated. Additionally only messages that contain a matching contact ID are valid for all message types.
 
+### Introduction
 Introduction allows a user (initiator) to introduce two or more of their contacts to each other. To introduce users, you start by sending each user a list of the contacts you wish to introduce them too. The message takes the following form
 - encrypted section
 	- contact id
@@ -79,8 +85,10 @@ The user with the highest number then sends a temporary contact update request, 
 		- new contact id
 		- new encryption key
 - IV
+
 The receiving user, if the request is valid, the updates and solidifies their contact.
 
+### Messaging
 The messaging protocol is fairly simple and uses the following format
 - encrypted section
 	- contact ID
@@ -89,6 +97,9 @@ The messaging protocol is fairly simple and uses the following format
 		- message: text or files
 - IV
 
+Messages are sent between users as HTTP post requests.
+
+#### Group chats 
 Group chats can be created by sending all users a group chat request.
 - encrypted section
 	- contact id
@@ -96,6 +107,7 @@ Group chats can be created by sending all users a group chat request.
 		- group chat id
 		- list of participating users onion addresses
 - IV
+
 If not all users receive the request it can be resent.
 
 Users can choose to accept or decline the group chat by sending a group chat response message. 
@@ -145,6 +157,7 @@ Pinging users can allow you check if a contact is able to receive messages. A pi
 	- Ping message type
 		- Optional group id
 - IV
+
 A http 204 code is sent back to establish that the user is available.
 
 To leave a group a user sends all users a notice of group exit message.
@@ -172,6 +185,7 @@ Users can choose to accept or decline the request with a group addition response
 		- group id
 		- addition id
 - IV
+
 Users can only accept if they have the contacts for all listed onion addresses. If they do not have the required contacts the can send a introduction petition message to the initiator.
 
 After sending an accept response users will continuously monitor the addition by sending a group addition status requests.
