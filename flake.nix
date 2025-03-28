@@ -15,7 +15,6 @@
       default = pkgs.mkShell {
           packages = with pkgs; [
             jdk23
-            gradle
             libGL
           ];
           LD_LIBRARY_PATH="${pkgs.libGL}/lib/";
