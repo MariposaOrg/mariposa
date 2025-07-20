@@ -8,20 +8,58 @@
   outputs = { self, nixpkgs }: 
   let 
     system = "x86_64-linux";
-    pkgs = import nixpkgs { inherit system; };
+    pkgs = import nixpkgs {
+      inherit system;
+      config.allowUnfree = true;
+      config.android_sdk.accept_license = true;
+    };
+    platformVersion = "34";
+    buildToolVersion = "34.0.0";
+    systemImageType = "default";
+    androidEnv = pkgs.androidenv.override { licenseAccepted = true; };
+    androidComp = (
+      androidEnv.composeAndroidPackages {
+        cmdLineToolsVersion = "8.0";
+        includeNDK = true;
+        # we need some platforms
+        platformVersions = [
+          platformVersion
+        ];
+        buildToolsVersions = [ buildToolVersion ]; 
+        # we need an emulator
+        includeEmulator = true;
+        includeSystemImages = true;
+        systemImageTypes = [
+          systemImageType
+          # "google_apis"
+        ];
+        abiVersions = [
+          "x86"
+          "x86_64"
+          "armeabi-v7a"
+          "arm64-v8a"
+        ];
+        cmakeVersions = [ "3.10.2" ];
+      }
+    );
   in
   {
     devShells.x86_64-linux = {
-      default = pkgs.mkShell {
-          packages = with pkgs; [
-            jdk23
-            libGL
-          ];
-          LD_LIBRARY_PATH="${pkgs.libGL}/lib/";
-          shellHook = ''
-          echo "dev"
-          '';
-        };
-      };
+     default = pkgs.mkShell rec {
+      packages = [
+        pkgs.jdk23
+        pkgs.libGL
+        pkgs.gradle
+      ];
+      LD_LIBRARY_PATH="${pkgs.libGL}/lib/";
+      ANDROID_HOME = "${androidComp.androidsdk}/libexec/android-sdk";
+      ANDROID_SDK_ROOT = "${androidComp.androidsdk}/libexec/android-sdk";
+      ANDROID_NDK_ROOT = "${androidComp.androidsdk}/libexec/android-sdk/ndk-bundle";
+      GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${ANDROID_HOME}/build-tools/${buildToolVersion}/aapt2";
+      shellHook = ''
+      echo "dev"
+      '';
+       };
+     };
   };
 }
