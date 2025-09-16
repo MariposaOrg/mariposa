@@ -56,12 +56,30 @@
         "createDistributable"
       ];
 
-      installPhase = ''
-        mkdir -p $out/bin
-        mkdir -p $out/lib
-        mv composeApp/build/compose/binaries/main/app/org.mariposa.mariposa/bin/org.mariposa.mariposa $out/bin/${pname}
-        mv composeApp/build/compose/binaries/main/app/org.mariposa.mariposa/lib/* $out/lib/
+      buildInputs = with pkgs; [
+        libGL
+        libGLU
+        xorg.libX11
+        xorg.libXext
+        xorg.libXi
+        xorg.libXrandr
+        xorg.libXcursor
+        xorg.libXinerama
+        xorg.libXxf86vm
+      ];
+  
+      # Set environment variables for Gradle/Kotlin Native
+      preBuild = ''
+        export CPATH="${pkgs.lib.makeSearchPathOutput "dev" "include" buildInputs}"
+        export LIBRARY_PATH="${pkgs.lib.makeLibraryPath buildInputs}"
+        export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath buildInputs}"
       '';
+
+      installPhase = ''
+        mkdir -p $out
+        mv composeApp/build/compose/binaries/main/app/mariposa/* $out/
+      '';
+
       
       ANDROID_HOME = "${androidComp.androidsdk}/libexec/android-sdk";
       ANDROID_SDK_ROOT = "${androidComp.androidsdk}/libexec/android-sdk";
