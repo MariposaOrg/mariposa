@@ -52,12 +52,20 @@
       lockFile = ./gradle.lock;
       src = ./.;
       gradleFlags = ["-Dorg.gradle.project.android.aapt2FromMavenOverride=${ANDROID_HOME}/build-tools/${buildToolVersion}/aapt2"];
-      gradleInstallFlags = [
+      gradleBuildFlags = [
         "build"
+        "createDistributable"
       ];
+
+      installPhase = ''
+        mkdir -p $out/bin
+        mv composeApp/build/compose/binaries/main/app/org.mariposa.mariposa/bin/org.mariposa.mariposa $out/bin/${pname}
+        mv composeApp/build/compose/binaries/main/app/org.mariposa.mariposa/lib/* $out/lib/
+      '';
+      
       ANDROID_HOME = "${androidComp.androidsdk}/libexec/android-sdk";
-      # ANDROID_SDK_ROOT = "${androidComp.androidsdk}/libexec/android-sdk";
-      # ANDROID_NDK_ROOT = "${androidComp.androidsdk}/libexec/android-sdk/ndk-bundle";
+      ANDROID_SDK_ROOT = "${androidComp.androidsdk}/libexec/android-sdk";
+      ANDROID_NDK_ROOT = "${androidComp.androidsdk}/libexec/android-sdk/ndk-bundle";
     };
 
   
