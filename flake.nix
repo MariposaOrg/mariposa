@@ -53,7 +53,6 @@
       src = ./.;
       gradleFlags = ["-Dorg.gradle.project.android.aapt2FromMavenOverride=${ANDROID_HOME}/build-tools/${buildToolVersion}/aapt2"];
       gradleBuildFlags = [
-        "build"
         "createDistributable"
       ];
 
