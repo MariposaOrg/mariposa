@@ -58,6 +58,7 @@
 
       installPhase = ''
         mkdir -p $out/bin
+        mkdir -p $out/lib
         mv composeApp/build/compose/binaries/main/app/org.mariposa.mariposa/bin/org.mariposa.mariposa $out/bin/${pname}
         mv composeApp/build/compose/binaries/main/app/org.mariposa.mariposa/lib/* $out/lib/
       '';
