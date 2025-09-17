@@ -73,10 +73,10 @@
 
       installPhase = ''
         mkdir -p $out
-        mv mariposa/composeApp/build/compose/jars/* $out/
+        mv composeApp/build/compose/jars/* $out/${pname}.jar
 
         makeWrapper ${pkgs.jdk}/bin/java $out/bin/${pname} \
-          --add-flags "-jar $out/lib/${pname}.jar"
+          --add-flags "-jar $out/${pname}.jar"
         
       '';
 
