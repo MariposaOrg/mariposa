@@ -53,19 +53,15 @@
       src = ./.;
       gradleFlags = ["-Dorg.gradle.project.android.aapt2FromMavenOverride=${ANDROID_HOME}/build-tools/${buildToolVersion}/aapt2"];
       gradleBuildFlags = [
-        "createDistributable"
+        "packageUberJarForCurrentOS"
+      ];
+
+      nativeBuildInputs = with pkgs; [
+        makeWrapper
       ];
 
       buildInputs = with pkgs; [
-        libGL
-        libGLU
-        xorg.libX11
-        xorg.libXext
-        xorg.libXi
-        xorg.libXrandr
-        xorg.libXcursor
-        xorg.libXinerama
-        xorg.libXxf86vm
+        jdk
       ];
   
       # Set environment variables for Gradle/Kotlin Native
@@ -77,7 +73,11 @@
 
       installPhase = ''
         mkdir -p $out
-        mv composeApp/build/compose/binaries/main/app/mariposa/* $out/
+        mv mariposa/composeApp/build/compose/jars/* $out/
+
+        makeWrapper ${pkgs.jdk}/bin/java $out/bin/${pname} \
+          --add-flags "-jar $out/lib/${pname}.jar"
+        
       '';
 
       
