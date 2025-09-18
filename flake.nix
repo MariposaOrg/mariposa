@@ -90,6 +90,26 @@
         
       '';    
     } // android_gradle_envs);
+    
+    packages.x86_64-linux.apk = gradle2nix.builders.x86_64-linux.buildGradlePackage (rec {
+      pname = "mariposa";
+      version = "1.0";
+      lockFile = ./gradle.lock;
+      src = ./.;
+      gradleFlags = ["${GRADLE_OPTS}"];
+      gradleBuildFlags = [
+        "build"
+      ];
+
+      nativeBuildInputs = nativeBuildInputList;
+      buildInputs = buildInputList;
+  
+      installPhase = ''
+        mkdir -p $out
+        mv ./composeApp/build/outputs/apk/release/composeApp-release-unsigned.apk $out/${pname}.apk
+
+      '';    
+    } // android_gradle_envs);
   
     devShells.x86_64-linux = {
      default = pkgs.mkShell ({
