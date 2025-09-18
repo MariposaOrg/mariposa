@@ -68,7 +68,7 @@
   in
   {
 
-    packages.x86_64-linux.default = gradle2nix.builders.x86_64-linux.buildGradlePackage rec {
+    packages.x86_64-linux.default = gradle2nix.builders.x86_64-linux.buildGradlePackage (rec {
       pname = "mariposa";
       version = "1.0";
       lockFile = ./gradle.lock;
@@ -90,7 +90,7 @@
           --add-flags "-jar $out/${pname}.jar"
         
       '';    
-    } // android_gradle_envs;
+    } // android_gradle_envs);
   
     devShells.x86_64-linux = {
      default = pkgs.mkShell ({
