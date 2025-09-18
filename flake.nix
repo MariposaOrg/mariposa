@@ -63,7 +63,6 @@
       ANDROID_NDK_ROOT = "${androidComp.androidsdk}/libexec/android-sdk/ndk-bundle";
       LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath buildInputList}";
       GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${ANDROID_HOME}/build-tools/${buildToolVersion}/aapt2";
-      "ORG_GRADLE_PROJECT_android.aapt2FromMavenOverride" = "${ANDROID_HOME}/build-tools/${buildToolVersion}/aapt2";
     };
   in
   {
