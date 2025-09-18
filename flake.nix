@@ -56,12 +56,14 @@
 
 
     ANDROID_HOME = "${androidComp.androidsdk}/libexec/android-sdk";
+    GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${ANDROID_HOME}/build-tools/${buildToolVersion}/aapt2";
     android_gradle_envs = rec {
       ANDROID_HOME = "${androidComp.androidsdk}/libexec/android-sdk";
       ANDROID_SDK_ROOT = "${androidComp.androidsdk}/libexec/android-sdk";
       ANDROID_NDK_ROOT = "${androidComp.androidsdk}/libexec/android-sdk/ndk-bundle";
       LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath buildInputList}";
       GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${ANDROID_HOME}/build-tools/${buildToolVersion}/aapt2";
+      "ORG_GRADLE_PROJECT_android.aapt2FromMavenOverride" = "${ANDROID_HOME}/build-tools/${buildToolVersion}/aapt2";
     };
   in
   {
@@ -71,7 +73,7 @@
       version = "1.0";
       lockFile = ./gradle.lock;
       src = ./.;
-      gradleFlags = ["-Dorg.gradle.project.android.aapt2FromMavenOverride=${ANDROID_HOME}/build-tools/${buildToolVersion}/aapt2"];
+      gradleFlags = ["${GRADLE_OPTS}"];
       gradleBuildFlags = [
         "packageUberJarForCurrentOS"
       ];
@@ -91,12 +93,14 @@
     } // android_gradle_envs;
   
     devShells.x86_64-linux = {
-     default = pkgs.mkShell rec {
-      packages = buildInputList ++ nativeBuildInputList;
+     default = pkgs.mkShell ({
+      packages = buildInputList ++ nativeBuildInputList ++ [
+        pkgs.gradle
+      ];
       shellHook = ''
       echo "dev"
       '';
-       };
-     } // android_gradle_envs;
+       } // android_gradle_envs );
+     };
   };
 }
