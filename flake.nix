@@ -43,6 +43,26 @@
         cmakeVersions = [ "3.10.2" ];
       }
     );
+
+    buildInputList = [
+        pkgs.jdk
+        pkgs.libGL
+    ];
+
+    nativeBuildInputList = with pkgs; [
+      makeWrapper
+      jdk
+    ];
+
+
+    ANDROID_HOME = "${androidComp.androidsdk}/libexec/android-sdk";
+    android_gradle_envs = rec {
+      ANDROID_HOME = "${androidComp.androidsdk}/libexec/android-sdk";
+      ANDROID_SDK_ROOT = "${androidComp.androidsdk}/libexec/android-sdk";
+      ANDROID_NDK_ROOT = "${androidComp.androidsdk}/libexec/android-sdk/ndk-bundle";
+      LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath buildInputList}";
+      GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${ANDROID_HOME}/build-tools/${buildToolVersion}/aapt2";
+    };
   in
   {
 
@@ -56,29 +76,9 @@
         "packageUberJarForCurrentOS"
       ];
 
-      nativeBuildInputs = with pkgs; [
-        makeWrapper
-        libGL
-      ];
-
-      buildInputs = with pkgs; [
-        pkgs.libGL
-        pkgs.libGLU
-        pkgs.mesa
-        pkgs.xorg.libX11
-        pkgs.xorg.libXext
-        pkgs.xorg.libXrender
-        pkgs.xorg.libXtst
-        jdk
-      ];
+      nativeBuildInputs = nativeBuildInputList;
+      buildInputs = buildInputList;
   
-      # Set environment variables for Gradle/Kotlin Native
-      preBuild = ''
-        export CPATH="${pkgs.lib.makeSearchPathOutput "dev" "include" buildInputs}"
-        export LIBRARY_PATH="${pkgs.lib.makeLibraryPath buildInputs}"
-        export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath buildInputs}"
-      '';
-
       installPhase = ''
         mkdir -p $out
         mv composeApp/build/compose/jars/* $out/${pname}.jar
@@ -87,31 +87,16 @@
           --set LD_LIBRARY_PATH "${pkgs.lib.makeLibraryPath buildInputs}" \
           --add-flags "-jar $out/${pname}.jar"
         
-      '';
-
-      
-      ANDROID_HOME = "${androidComp.androidsdk}/libexec/android-sdk";
-      ANDROID_SDK_ROOT = "${androidComp.androidsdk}/libexec/android-sdk";
-      ANDROID_NDK_ROOT = "${androidComp.androidsdk}/libexec/android-sdk/ndk-bundle";
-    };
-
+      '';    
+    } // android_gradle_envs;
   
     devShells.x86_64-linux = {
      default = pkgs.mkShell rec {
-      packages = [
-        pkgs.jdk23
-        pkgs.libGL
-        pkgs.gradle
-      ];
-      LD_LIBRARY_PATH="${pkgs.libGL}/lib/";
-      ANDROID_HOME = "${androidComp.androidsdk}/libexec/android-sdk";
-      ANDROID_SDK_ROOT = "${androidComp.androidsdk}/libexec/android-sdk";
-      ANDROID_NDK_ROOT = "${androidComp.androidsdk}/libexec/android-sdk/ndk-bundle";
-      GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${ANDROID_HOME}/build-tools/${buildToolVersion}/aapt2";
+      packages = buildInputList ++ nativeBuildInputList;
       shellHook = ''
       echo "dev"
       '';
        };
-     };
+     } // android_gradle_envs;
   };
 }
