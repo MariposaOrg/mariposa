@@ -58,9 +58,17 @@
 
       nativeBuildInputs = with pkgs; [
         makeWrapper
+        libGL
       ];
 
       buildInputs = with pkgs; [
+        pkgs.libGL
+        pkgs.libGLU
+        pkgs.mesa
+        pkgs.xorg.libX11
+        pkgs.xorg.libXext
+        pkgs.xorg.libXrender
+        pkgs.xorg.libXtst
         jdk
       ];
   
@@ -76,6 +84,7 @@
         mv composeApp/build/compose/jars/* $out/${pname}.jar
 
         makeWrapper ${pkgs.jdk}/bin/java $out/bin/${pname} \
+          --set LD_LIBRARY_PATH "${pkgs.lib.makeLibraryPath buildInputs}" \
           --add-flags "-jar $out/${pname}.jar"
         
       '';
