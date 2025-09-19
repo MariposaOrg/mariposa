@@ -106,10 +106,20 @@
   
       installPhase = ''
         mkdir -p $out
-        mv ./composeApp/build/outputs/apk/release/composeApp-release-unsigned.apk $out/${pname}.apk
+        mv ./composeApp/build/outputs/apk/debug/composeApp-debug.apk $out/${pname}.apk
 
       '';    
     } // android_gradle_envs);
+
+    packages.x86_64-linux.runApk = androidEnv.emulateApp {
+      name = "emulate-MyAndroidApp";
+      platformVersion = "24";
+      abiVersion = "x86_64"; # mips, x86, x86_64
+      systemImageType = "default";
+      app = "${self.packages.x86_64-linux.apk}/mariposa.apk";
+      package = "org.mariposa.mariposa";
+      androidEmulatorFlags = "-gpu swiftshader_indirect";
+    };
   
     devShells.x86_64-linux = {
      default = pkgs.mkShell ({
