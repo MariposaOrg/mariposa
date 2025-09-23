@@ -109,7 +109,7 @@
       '';    
     } // android_gradle_envs);
 
-    packages.x86_64-linux.runApk = androidEnv.emulateApp {
+    packages.x86_64-linux.apkRunnerScript = androidEnv.emulateApp {
       name = "emulate-MyAndroidApp";
       platformVersion = "24";
       abiVersion = "x86_64"; # mips, x86, x86_64
@@ -117,6 +117,11 @@
       app = "${self.packages.x86_64-linux.apk}/mariposa.apk";
       package = "org.mariposa.mariposa";
       androidEmulatorFlags = "-gpu swiftshader_indirect";
+    };
+
+    apps.x86_64-linux.apk = {
+      type="app";
+      program="${self.packages.x86_64-linux.apkRunnerScript}/bin/run-test-emulator";
     };
   
     devShells.x86_64-linux = {
