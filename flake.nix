@@ -45,13 +45,13 @@
     );
 
     buildInputList = [
-        pkgs.jdk17
+        pkgs.jdk
         pkgs.libGL
     ];
 
     nativeBuildInputList = with pkgs; [
       makeWrapper
-      jdk17
+      jdk
     ];
 
 
