@@ -45,18 +45,16 @@
     );
 
     buildInputList = [
-        pkgs.jdk
+        pkgs.jdk17
         pkgs.libGL
     ];
 
     nativeBuildInputList = with pkgs; [
       makeWrapper
-      jdk
+      jdk17
     ];
 
 
-    ANDROID_HOME = "${androidComp.androidsdk}/libexec/android-sdk";
-    GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${ANDROID_HOME}/build-tools/${buildToolVersion}/aapt2";
     android_gradle_envs = rec {
       ANDROID_HOME = "${androidComp.androidsdk}/libexec/android-sdk";
       ANDROID_SDK_ROOT = "${androidComp.androidsdk}/libexec/android-sdk";
@@ -72,7 +70,7 @@
       version = "1.0";
       lockFile = ./gradle.lock;
       src = ./.;
-      gradleFlags = ["${GRADLE_OPTS}"];
+      gradleFlags = ["${android_gradle_envs.GRADLE_OPTS}"];
       gradleBuildFlags = [
         "packageUberJarForCurrentOS"
       ];
@@ -96,7 +94,7 @@
       version = "1.0";
       lockFile = ./gradle.lock;
       src = ./.;
-      gradleFlags = ["${GRADLE_OPTS}"];
+      gradleFlags = ["${android_gradle_envs.GRADLE_OPTS}"];
       gradleBuildFlags = [
         "build"
       ];
