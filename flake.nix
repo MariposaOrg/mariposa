@@ -65,7 +65,7 @@
   in
   {
 
-    packages.x86_64-linux.default = gradle2nix.builders.x86_64-linux.buildGradlePackage (rec {
+    packages.x86_64-linux.uberJar = gradle2nix.builders.x86_64-linux.buildGradlePackage (rec {
       pname = "mariposa";
       version = "1.0";
       lockFile = ./gradle.lock;
@@ -81,13 +81,25 @@
       installPhase = ''
         mkdir -p $out
         mv composeApp/build/compose/jars/* $out/${pname}.jar
-
-        makeWrapper ${pkgs.jdk}/bin/java $out/bin/${pname} \
-          --set LD_LIBRARY_PATH "${pkgs.lib.makeLibraryPath buildInputs}" \
-          --add-flags "-jar $out/${pname}.jar"
-        
       '';    
     } // android_gradle_envs);
+
+    packages.x86_64-linux.default = pkgs.stdenv.mkDerivation (rec {
+      name = "mariposa";
+      src = self.packages.x86_64-linux.uberJar;
+      buildInputs = buildInputList;
+      nativeBuildInputs = nativeBuildInputList;
+
+      installPhase = ''
+        mkdir -p $out
+
+        cp ${name}.jar $out/${name}.jar
+        
+        makeWrapper ${pkgs.jdk}/bin/java $out/bin/${name} \
+          --set LD_LIBRARY_PATH "${pkgs.lib.makeLibraryPath buildInputs}" \
+          --add-flags "-jar $out/${name}.jar"
+      '';
+    });
     
     packages.x86_64-linux.apk = gradle2nix.builders.x86_64-linux.buildGradlePackage (rec {
       pname = "mariposa";
