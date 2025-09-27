@@ -47,11 +47,13 @@
     buildInputList = [
         pkgs.jdk
         pkgs.libGL
+        pkgs.android-tools
     ];
 
     nativeBuildInputList = with pkgs; [
       makeWrapper
       jdk
+      android-tools
     ];
 
 
@@ -134,6 +136,13 @@
     apps.x86_64-linux.apk = {
       type="app";
       program="${self.packages.x86_64-linux.apkRunnerScript}/bin/run-test-emulator";
+    };
+
+    apps.x86_64-linux.installApk = {
+      type="app";
+      program= toString (pkgs.writeShellScript "install-apk" ''
+        ${pkgs.android-tools}/bin/adb install -d ${self.packages.x86_64-linux.apk}/mariposa.apk
+      '');
     };
   
     devShells.x86_64-linux = {
