@@ -47,13 +47,11 @@
     buildInputList = [
         pkgs.jdk
         pkgs.libGL
-        pkgs.android-tools
     ];
 
     nativeBuildInputList = with pkgs; [
       makeWrapper
       jdk
-      android-tools
     ];
 
 
