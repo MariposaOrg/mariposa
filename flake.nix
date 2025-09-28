@@ -147,6 +147,7 @@
      default = pkgs.mkShell ({
       packages = buildInputList ++ nativeBuildInputList ++ [
         pkgs.gradle
+        pkgs.android-tools
       ];
       shellHook = ''
       echo "dev"
