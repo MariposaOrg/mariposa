@@ -9,11 +9,13 @@
   outputs = { self, nixpkgs, gradle2nix }: 
   let 
     system = "x86_64-linux";
+
     pkgs = import nixpkgs {
       inherit system;
       config.allowUnfree = true;
       config.android_sdk.accept_license = true;
     };
+
     platformVersion = "34";
     buildToolVersion = "34.0.0";
     systemImageType = "default";
@@ -54,6 +56,7 @@
       jdk
     ];
 
+    appName = "mariposa";
 
     android_gradle_envs = rec {
       ANDROID_HOME = "${androidComp.androidsdk}/libexec/android-sdk";
@@ -66,7 +69,7 @@
   {
 
     packages.x86_64-linux.uberJar = gradle2nix.builders.x86_64-linux.buildGradlePackage (rec {
-      pname = "mariposa";
+      pname = appName;
       version = "1.0";
       lockFile = ./gradle.lock;
       src = ./.;
@@ -85,7 +88,7 @@
     } // android_gradle_envs);
 
     packages.x86_64-linux.default = pkgs.stdenv.mkDerivation (rec {
-      name = "mariposa";
+      name = appName;
       src = self.packages.x86_64-linux.uberJar;
       buildInputs = buildInputList;
       nativeBuildInputs = nativeBuildInputList;
@@ -102,7 +105,7 @@
     });
     
     packages.x86_64-linux.apk = gradle2nix.builders.x86_64-linux.buildGradlePackage (rec {
-      pname = "mariposa";
+      pname = appName;
       version = "1.0";
       lockFile = ./gradle.lock;
       src = ./.;
@@ -126,7 +129,7 @@
       platformVersion = "24";
       abiVersion = "x86_64"; # mips, x86, x86_64
       systemImageType = "default";
-      app = "${self.packages.x86_64-linux.apk}/mariposa.apk";
+      app = "${self.packages.x86_64-linux.apk}/${appName}.apk";
       package = "org.mariposa.mariposa";
       androidEmulatorFlags = "-gpu swiftshader_indirect";
     };
@@ -139,7 +142,7 @@
     apps.x86_64-linux.installApk = {
       type="app";
       program= toString (pkgs.writeShellScript "install-apk" ''
-        ${pkgs.android-tools}/bin/adb install -d ${self.packages.x86_64-linux.apk}/mariposa.apk
+        ${pkgs.android-tools}/bin/adb install -d ${self.packages.x86_64-linux.apk}/${appName}.apk
       '');
     };
   
