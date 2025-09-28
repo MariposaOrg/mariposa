@@ -151,6 +151,7 @@
       packages = buildInputList ++ nativeBuildInputList ++ [
         pkgs.gradle
         pkgs.android-tools
+        pkgs.kotlin-language-server
       ];
       shellHook = ''
       echo "dev"
